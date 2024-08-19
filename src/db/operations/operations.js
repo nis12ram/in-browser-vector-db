@@ -296,7 +296,14 @@ export class Operations {
         return updateManyResult;
     };
 
-
+    /**
+    * Deletes a single entry based on the specified index.
+    * 
+    * @param {number} index - The index of the entry to delete.
+    * @param {Object} internal - Internal arguments.
+    * 
+    * @returns {Promise<{ msg: string }>} A promise that resolves to an object containing a message indicating the result of the deletion.
+    */
     async deleteByIndex(index, internal = {}) {
         if (!isInteger(index)) throw new InputError('Invalid index specified.Index should be integer.');
 
@@ -309,14 +316,35 @@ export class Operations {
             const request = vectorBlock.delete(index);
             request.onsuccess = (e) => {
                 if (!e.target.result) resolve({ msg: `Delete is perfomed at index: ${index}` });
-                else reject(new OperationsError('Delet operation failed.'));
+                else reject(new OperationsError('Delete operation failed.'));
             };
             request.onerror = (e) => reject(new OperationsError(`Delete operation failed.${e.target.error.message}`));
         });
     };
 
+    /**
+    * Deletes multiple entries based on the specified indices.
+    * 
+    * @param {Array<number>} indices - An array of indices specifying the entries to delete.
+    * @param {Object} internal - Internal arguments..
+    * 
+    * @returns {Promise<Array<{ msg: string }>>} A promise that resolves to an array of objects, each containing a message indicating the result of the deletion.
+    */
     async deleteByIndices(indices, internal = {}) {
+        if (!isArray(indices)) throw new InputError('Invalid indices specified.Indices should be array.');
 
+        const { transaction, vectorBlock } = this._transactionTemplate(internal);
+        const deleteByIndicesResult = [];
+        for (let i = 0; i < indices.length; i++) {
+            const index = indices[i];
+            const deleteByIndexResult = await this.deleteByIndex(index, { useParentTransaction: true, transaction, vectorBlock });
+            deleteByIndicesResult.push(deleteByIndexResult);
+        };
+        return deleteByIndicesResult;
     };
+
+    async search() {
+
+    }
 };
 
