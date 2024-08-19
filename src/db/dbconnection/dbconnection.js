@@ -37,6 +37,13 @@ export class DbConnection {
         };
     };
 
+    /**
+    * Opens a config block.
+    *     
+    * @param {IDBDatabase} db - The db instance.
+    * 
+    * @returns {Boolean}  true,if configBlock is opened.
+    */
     _openConfigBlock(db) {
         if (db.objectStoreNames.contains('configBlock')) {
             return true;
@@ -59,7 +66,7 @@ export class DbConnection {
     * 
     * @param {string} vectorBlockName - The name of vectorBlock.
     * 
-    * @returns {Promise<{,msg: string}>}
+    * @returns {Promise<vectorBlockConnection,{msg:string}>}
     */
     async openVectorBlock(vectorBlockName) {
         if (!vectorBlockName || typeof vectorBlockName !== 'string') return Promise.reject(new InputError('Invalid vectorBlockName specified.'));
@@ -116,6 +123,7 @@ export class DbConnection {
             this._db.close();
             this.vectorBlockOpened = false;
             this._db = null;
+            return {msg:'Vector Block is closed'}
         } else throw new Error('Closing vectorBlock failed.No opened vectorBlock found.');
     };
 
