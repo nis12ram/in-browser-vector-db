@@ -59,7 +59,7 @@ export class DbConnection {
     * 
     * @param {string} vectorBlockName - The name of vectorBlock.
     * 
-    * @returns {Promise<{vectorBlockName: string | null,msg: string,success: boolean}>}
+    * @returns {Promise<{,msg: string}>}
     */
     async openVectorBlock(vectorBlockName) {
         if (!vectorBlockName || typeof vectorBlockName !== 'string') return Promise.reject(new InputError('Invalid vectorBlockName specified.'));

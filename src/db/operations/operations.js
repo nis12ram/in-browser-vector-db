@@ -9,7 +9,7 @@ export class Operations {
         this.vectorBlockName = vectorBlockName;
         this.vectorDType = vectorDType;
         this.vectorDimension = vectorDimension;
-    }
+    };
 
     /**
     * Initialize the transaction process for vectorBlock.
@@ -62,9 +62,7 @@ export class Operations {
         if (!dimesnionResult) throw new OperationsError(`Invalid vector dimension specified.Specified vector dimension:${vector.length}.Configured vector dimension:${this.vectorDimension}`);
         const dTypeResult = OperationsUtils.isVectorDTypeMatches({ vector, dType: this.vectorDType });
         if (!dTypeResult) throw new OperationsError(`Invalid vector dType specified.Configured vector dType:${this.vectorDType}`);
-    }
-
-
+    };
 
     /**
     * Checks whether any entry is already inserted with the specified index or not.
@@ -219,10 +217,9 @@ export class Operations {
     * 3 If the index is found and their are something to update, it updates the entry and returns a message like: 'Update is perfomed at index: _'.
     * 
     * @param {number} index - The index of the entry to be updated. Must be an integer.
-    * @param {Object} entry - The new data for the entry.
-    * @param {string} entry.text - The text content for the entry.
-    * @param {Array} entry.vector - The vector data for the entry.
-    * @param {Object} entry.metadata - Additional information about the entry.
+    * @param {string} text - The text content for the entry.
+    * @param {Array} vector - The vector data for the entry.
+    * @param {Object} metadata - Additional information about the entry.
     * @param {Object} internal - Internal arguments.
     * 
     * @returns {Promise<{msg: string}>} - A message indicating the status of the update.
