@@ -98,4 +98,9 @@ export class OperationsUtils {
         // Metadata match 
         return isEqual(metadata1, metadata2);
     };
+
+
+    static topKStorageTemplate(topK) {
+        return Array.from({ length: topK }, () => { return [{}, 1000.0] });
+    };
 };

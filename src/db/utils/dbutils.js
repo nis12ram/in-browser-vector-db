@@ -17,8 +17,18 @@ export class DbUtils {
         return Array.from({ length: n }, () => { return {} });
     };
 
+    static arrayHaveSingleType(arr) {
+        if (arr.length === 0) return true;
+        const firstType = typeof arr[0];
+        const isArrayHaveSingleType = arr.every(item => typeof item === firstType);        
+        return { isArrayHaveSingleType, type: isArrayHaveSingleType ? firstType : undefined }
+    }
+
 
 
 
 };
+
+
+
 

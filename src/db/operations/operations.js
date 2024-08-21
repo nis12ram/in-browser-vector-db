@@ -371,10 +371,12 @@ export class Operations {
         return isEqual(filterConditionsKeys, keysThatPassedFilter);
     };
 
-    async search({ query, topK, where = { bookName: { $gt: 'Book A' } } }, internal = {}) {
+    async search({ query, topK, where = { bookName: { $ne: 'Book A' }, sentenceReview: { $lte: 300 }, tagName: { $nin: 'Tense' } } }, internal = {}) {
         if (!isString(query)) throw new InputError('Invalid query specified.Query should be string.');
         if (!isInteger(topK)) throw new InputError('Invalid topK specified.TopK should be integer.');
         if (!isObject(where)) throw new InputError('Invalid where specified.Where should be object.');
+
+        const unrankedTopKEntries = OperationsUtils.topKStorageTemplate(topK);
 
         const { transaction, vectorBlock } = this._transactionTemplate(internal);
 
@@ -383,10 +385,12 @@ export class Operations {
             request.onsuccess = (e) => {
                 const cursor = e.target.result;
                 if (cursor) {
-                    const entry = cursor.value;
-                    const isEntryPassedFilter = this._metadataBasedFilter({ metadata: entry.metadata, filterConditions: where });
+                    const dbEntry = cursor.value;
+                    const isEntryPassedFilter = this._metadataBasedFilter({ metadata: dbEntry.metadata, filterConditions: where });
                     if (isEntryPassedFilter) {
-                        console.log(entry);
+                        const readableEntry = OperationsUtils.convertDbEntryToReadableEntry({ dbEntry, vectorDType: this.vectorDType })
+                        console.log(readableEntry);
+
                     };
                     cursor.continue()
                 };
