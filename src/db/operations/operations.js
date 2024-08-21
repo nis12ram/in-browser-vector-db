@@ -2,7 +2,8 @@
 import { OperationsUtils } from "./operationsutils"
 import { DbUtils } from "../utils/dbutils";
 import { InputError, OperationsError, TransactionError } from "../utils/error";
-import { isInteger, isString, isObject, isArray } from 'lodash'
+import { isInteger, isString, isObject, isArray, isEqual } from 'lodash'
+import { filterOperators } from "../utils/filteroperators";
 export class Operations {
     constructor({ vectorBlockName, db, vectorDType, vectorDimension }) {
         this._db = db;
@@ -42,7 +43,7 @@ export class Operations {
             transaction = internal.transaction;
             vectorBlock = internal.vectorBlock;
         } else {
-            const initTransactionResult = this._initTransaction();
+            const initTransactionResult = this._initTransaction(internal.transactionMode ? internal.transactionMode : "readwrite");
             transaction = initTransactionResult.transaction;
             vectorBlock = initTransactionResult.vectorBlock;
         };
@@ -340,8 +341,57 @@ export class Operations {
         return deleteByIndicesResult;
     };
 
-    async search() {
+    /**
+    * Deletes multiple entries based on the specified indices.
+    * 
+    * @param {Array<number>} indices - An array of indices specifying the entries to delete.
+    * @param {Object} internal - Internal arguments..
+    * 
+    * @returns {Boolean} true if the filter condition is satisfied.otherwise false.
+    */
+    _metadataBasedFilter({ metadata, filterConditions }) {
+        const metadataKeys = Object.keys(metadata);
+        const filterConditionsKeys = Object.keys(filterConditions);
 
-    }
+        if (metadataKeys.length === 0 || filterConditionsKeys.length === 0) return false;
+
+        const keysThatPassedFilter = [];
+        filterConditionsKeys.forEach((filterConditionKey) => {
+            if (metadataKeys.includes(filterConditionKey)) {
+                const filterConditionObj = filterConditions[filterConditionKey];
+                const filterConditionOperator = Object.keys(filterConditionObj)[0];
+                const isOperatorExists = DbUtils.hasKey(filterOperators, filterConditionOperator);
+                if (!isOperatorExists) throw new InputError(`Invalid filter operator specified.Filter operator should be one from these ${Object.keys(filterOperators)}.`);
+                const filterConditionValue = filterConditionObj[filterConditionOperator];
+                const filter = filterOperators[filterConditionOperator];
+                const iskeyPassedFilter = filter({ value1: metadata[filterConditionKey], value2: filterConditionValue });
+                if (iskeyPassedFilter) keysThatPassedFilter.push(filterConditionKey);
+            };
+        });
+        return isEqual(filterConditionsKeys, keysThatPassedFilter);
+    };
+
+    async search({ query, topK, where = { bookName: { $gt: 'Book A' } } }, internal = {}) {
+        if (!isString(query)) throw new InputError('Invalid query specified.Query should be string.');
+        if (!isInteger(topK)) throw new InputError('Invalid topK specified.TopK should be integer.');
+        if (!isObject(where)) throw new InputError('Invalid where specified.Where should be object.');
+
+        const { transaction, vectorBlock } = this._transactionTemplate(internal);
+
+        return new Promise((resolve, reject) => {
+            const request = vectorBlock.openCursor();
+            request.onsuccess = (e) => {
+                const cursor = e.target.result;
+                if (cursor) {
+                    const entry = cursor.value;
+                    const isEntryPassedFilter = this._metadataBasedFilter({ metadata: entry.metadata, filterConditions: where });
+                    if (isEntryPassedFilter) {
+                        console.log(entry);
+                    };
+                    cursor.continue()
+                };
+            };
+        });
+    };
 };
 
