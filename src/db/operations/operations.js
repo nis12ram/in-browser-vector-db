@@ -1,9 +1,10 @@
 // import { vectorDTypes } from "../utils/vectordtypes"
-import { OperationsUtils } from "./operationsutils"
-import { DbUtils } from "../utils/dbutils";
+import { OperationsUtils } from "./operationsUtils"
+import { DbUtils } from "../utils/dbUtils";
 import { InputError, OperationsError, TransactionError } from "../utils/error";
 import { isInteger, isString, isObject, isArray, isEqual } from 'lodash'
-import { filterOperators } from "../utils/filteroperators";
+import { filterOperators } from "../utils/filterOperators";
+import { vectorDistanceAlgorithms } from "../../algorithms/vectorDistance/vectorDistanceAlgorithms";
 export class Operations {
     constructor({ vectorBlockName, db, vectorDType, vectorDimension }) {
         this._db = db;
@@ -342,19 +343,16 @@ export class Operations {
     };
 
     /**
-    * Deletes multiple entries based on the specified indices.
+    * Use metadata to filter the entry.
     * 
-    * @param {Array<number>} indices - An array of indices specifying the entries to delete.
-    * @param {Object} internal - Internal arguments..
+    * @param {Object} metadata - The metadata of the entry.
+    * @param {Object} filterConditions - The condition to filter the entry.
     * 
     * @returns {Boolean} true if the filter condition is satisfied.otherwise false.
     */
     _metadataBasedFilter({ metadata, filterConditions }) {
         const metadataKeys = Object.keys(metadata);
         const filterConditionsKeys = Object.keys(filterConditions);
-
-        if (metadataKeys.length === 0 || filterConditionsKeys.length === 0) return false;
-
         const keysThatPassedFilter = [];
         filterConditionsKeys.forEach((filterConditionKey) => {
             if (metadataKeys.includes(filterConditionKey)) {
@@ -370,14 +368,16 @@ export class Operations {
         });
         return isEqual(filterConditionsKeys, keysThatPassedFilter);
     };
-
-    async search({ query, topK, where = { bookName: { $ne: 'Book A' }, sentenceReview: { $lte: 300 }, tagName: { $nin: 'Tense' } } }, internal = {}) {
-        if (!isString(query)) throw new InputError('Invalid query specified.Query should be string.');
-        if (!isInteger(topK)) throw new InputError('Invalid topK specified.TopK should be integer.');
-        if (!isObject(where)) throw new InputError('Invalid where specified.Where should be object.');
+    // where = { bookName: { $ne: 'Book A' }, sentenceReview: { $lte: 50 }, tagName: { $in: 'Tense' } }
+    async search({ queryVector, vectorDistance = 'cosine', topK, where = {} }, internal = {}) {
+        if (!isArray(queryVector)) throw new InputError('Invalid queryVector specified.The queryVector should be array.');
+        if (!isInteger(topK)) throw new InputError('Invalid topK specified.The topK should be an integer.');
+        if (!isObject(where)) throw new InputError('Invalid where specified.The where should be an object.');
+        if (!isString(vectorDistance)) throw new InputError('Invalid vectorDistance specified.The vectorDistance should be a string.');
+        if (!DbUtils.hasKey(vectorDistanceAlgorithms, vectorDistance)) throw new InputError(`Invalid vectorDistance specified.The vectorDistance should be one from ${Object.keys(vectorDistanceAlgorithms)}.`);
+        this._verifyVector(queryVector);
 
         const unrankedTopKEntries = OperationsUtils.topKStorageTemplate(topK);
-
         const { transaction, vectorBlock } = this._transactionTemplate(internal);
 
         return new Promise((resolve, reject) => {
@@ -388,11 +388,12 @@ export class Operations {
                     const dbEntry = cursor.value;
                     const isEntryPassedFilter = this._metadataBasedFilter({ metadata: dbEntry.metadata, filterConditions: where });
                     if (isEntryPassedFilter) {
-                        const readableEntry = OperationsUtils.convertDbEntryToReadableEntry({ dbEntry, vectorDType: this.vectorDType })
+                        const readableEntry = OperationsUtils.convertDbEntryToReadableEntry({ dbEntry, vectorDType: this.vectorDType });
                         console.log(readableEntry);
-
+                        const vectorDistanceAlgoriithm = vectorDistanceAlgorithms[vectorDistance];
+                        console.log(vectorDistanceAlgoriithm({ vector1: queryVector, vector2: readableEntry.vector }));
                     };
-                    cursor.continue()
+                    cursor.continue();
                 };
             };
         });

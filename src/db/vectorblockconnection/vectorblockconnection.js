@@ -1,7 +1,7 @@
 import { Operations } from "../operations/operations";
-import { DbUtils } from "../utils/dbutils";
+import { DbUtils } from "../utils/dbUtils";
 import { ConfigBlockError, InputError, TransactionError } from "../utils/error";
-import { vectorDTypes } from "../utils/vectordtypes";
+import { vectorDTypes } from "../utils/vectorDTypes";
 import { isInteger, isString, isObject, isArray } from 'lodash'
 export class VectorBlockConnection {
     constructor({ vectorBlockName, dbName, db }) {

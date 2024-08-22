@@ -1,4 +1,4 @@
-import { DbConnection } from "../dbconnection/dbconnection";
+import { DbConnection } from "../dbConnection/dbConnection";
 import { ConnectionError, OpenDbError, InputError } from "../utils/error";
 export class Connection {
 

@@ -1,5 +1,5 @@
 import { InputError, OpenVectorBlockError, ConfigBlockError } from "../utils/error";
-import { VectorBlockConnection } from "../vectorblockconnection/vectorblockconnection";
+import { VectorBlockConnection } from "../vectorBlockConnection/vectorBlockConnection";
 export class DbConnection {
     constructor({ dbName, dbVersion }) {
         this.dbName = dbName;

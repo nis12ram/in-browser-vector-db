@@ -1,5 +1,5 @@
-import { vectorDTypes } from "../utils/vectordtypes";
-import { DbUtils } from "../utils/dbutils";
+import { vectorDTypes } from "../utils/vectorDTypes";
+import { DbUtils } from "../utils/dbUtils";
 import { isEqual } from 'lodash'
 export class OperationsUtils {
 

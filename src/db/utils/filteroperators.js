@@ -1,6 +1,6 @@
-import { isEqual, gt, isInteger, isNumber, lt, gte, lte, isString, isBoolean, includes, isArray, eq } from "lodash";
+import { isEqual, gt, isNumber, lt, gte, lte, isString, isBoolean, includes, isArray } from "lodash";
 import { InputError } from "./error";
-import { DbUtils } from "./dbutils";
+import { DbUtils } from "./dbUtils";
 
 export const filterOperators = Object.freeze({
     $eq: equal,
