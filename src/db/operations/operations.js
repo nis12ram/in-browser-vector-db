@@ -2,7 +2,7 @@
 import { OperationsUtils } from "./operationsUtils"
 import { DbUtils } from "../utils/dbUtils";
 import { InputError, OperationsError, TransactionError } from "../utils/error";
-import { isInteger, isString, isObject, isArray, isEqual } from 'lodash'
+import { isInteger, isString, isObject, isArray, isEqual, sortBy, orderBy } from 'lodash'
 import { filterOperators } from "../utils/filterOperators";
 import { vectorDistanceAlgorithms } from "../../algorithms/vectorDistance/vectorDistanceAlgorithms";
 export class Operations {
@@ -377,25 +377,48 @@ export class Operations {
         if (!DbUtils.hasKey(vectorDistanceAlgorithms, vectorDistance)) throw new InputError(`Invalid vectorDistance specified.The vectorDistance should be one from ${Object.keys(vectorDistanceAlgorithms)}.`);
         this._verifyVector(queryVector);
 
-        const unrankedTopKEntries = OperationsUtils.topKStorageTemplate(topK);
+        let unrankedTopKEntries = OperationsUtils.topKStorageTemplate(topK);
         const { transaction, vectorBlock } = this._transactionTemplate(internal);
 
         return new Promise((resolve, reject) => {
             const request = vectorBlock.openCursor();
             request.onsuccess = (e) => {
-                const cursor = e.target.result;
-                if (cursor) {
-                    const dbEntry = cursor.value;
-                    const isEntryPassedFilter = this._metadataBasedFilter({ metadata: dbEntry.metadata, filterConditions: where });
-                    if (isEntryPassedFilter) {
-                        const readableEntry = OperationsUtils.convertDbEntryToReadableEntry({ dbEntry, vectorDType: this.vectorDType });
-                        console.log(readableEntry);
-                        const vectorDistanceAlgoriithm = vectorDistanceAlgorithms[vectorDistance];
-                        console.log(vectorDistanceAlgoriithm({ vector1: queryVector, vector2: readableEntry.vector }));
+                try {
+                    const cursor = e.target.result;
+                    if (cursor) {
+                        const dbEntry = cursor.value;
+                        const isEntryPassedFilter = this._metadataBasedFilter({ metadata: dbEntry.metadata, filterConditions: where });
+                        if (isEntryPassedFilter) {
+                            const readableEntry = OperationsUtils.convertDbEntryToReadableEntry({ dbEntry, vectorDType: this.vectorDType });
+                            console.log(readableEntry);
+                            const vectorDistanceAlgoriithm = vectorDistanceAlgorithms[vectorDistance];
+                            const distance = vectorDistanceAlgoriithm({ vector1: queryVector, vector2: readableEntry.vector });
+                            let flagValueForUpdate = true;
+                            const highestDistanceAvailable = Math.max(...unrankedTopKEntries.map(i => i[1]));
+                            unrankedTopKEntries = unrankedTopKEntries.map(i => {
+                                const collectedDistance = i[1];
+                                if ((collectedDistance === highestDistanceAvailable) && (flagValueForUpdate === true)) {
+                                    if (distance < collectedDistance) {
+                                        flagValueForUpdate = false;
+                                        return [readableEntry, distance];
+                                    };
+                                };
+                                return i;
+                            });
+                            console.log(distance);
+                            console.log(unrankedTopKEntries);
+                        };
+                        cursor.continue();
+                    } else {
+                        const rankedTopKEntries = sortBy(unrankedTopKEntries);
+                        console.log(rankedTopKEntries);
+                        resolve(rankedTopKEntries);
                     };
-                    cursor.continue();
+                } catch (error) {
+                    reject(new OperationsError(`The search operation failed.${error.message}`));
                 };
             };
+            request.onerror = (e) => reject(new OperationsError(`The search operation failed.${e.target.error.message}`))
         });
     };
 };

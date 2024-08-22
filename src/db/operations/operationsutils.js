@@ -101,6 +101,6 @@ export class OperationsUtils {
 
 
     static topKStorageTemplate(topK) {
-        return Array.from({ length: topK }, () => { return [{}, 1000.0] });
+        return Array.from({ length: topK }, () => [{}, 1000.0]);
     };
 };
