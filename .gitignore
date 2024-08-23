@@ -13,3 +13,6 @@ build/
 # Ignore OS-specific files
 .idea/
 .vscode/
+
+# Ignore tempCodeRunnerFile.js
+tempCodeRunnerFile.js
