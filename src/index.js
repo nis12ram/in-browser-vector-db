@@ -1,2 +1,3 @@
 import { Connection } from "./db/connection/connection"
-export { Connection }
+import { convertFloatToBinary } from "./utilities/main"
+export { Connection, convertFloatToBinary }
