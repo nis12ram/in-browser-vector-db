@@ -38,9 +38,9 @@ export class OperationsUtils {
     */
     static convertDbEntryToReadableEntry({ dbEntry, vectorDType }) {
         const readableEntry = { ...dbEntry };
-        if (!dbEntry.buffer) throw new OperationsError(`Buffer not found in dbEntry.`);
+        if (!dbEntry.buffer) throw new OperationsError(`The buffer not found in dbEntry.`);
         const vector = this.convertBufferToVector({ buffer: dbEntry.buffer, vectorDType });
-        if (!vector) throw new OperationsError(`Buffer to vector conversion failed.`);
+        if (!vector) throw new OperationsError(`The buffer to vector conversion failed.`);
         readableEntry.vector = vector;
         delete readableEntry.buffer;
         return readableEntry;
@@ -57,9 +57,9 @@ export class OperationsUtils {
     */
     static convertReadableEntryToDbEntry({ readableEntry, vectorDType }) {
         const dbEntry = { ...readableEntry };
-        if (!readableEntry.vector) throw new OperationsError(`Vector not found in readableEntry.`);
+        if (!readableEntry.vector) throw new OperationsError(`The vector not found in readableEntry.`);
         const buffer = this.convertVectorToBuffer({ vector: readableEntry.vector, vectorDType });
-        if (!buffer) throw new OperationsError(`Vector to buffer conversion failed.`);
+        if (!buffer) throw new OperationsError(`The vector to buffer conversion failed.`);
         dbEntry.buffer = buffer;
         delete dbEntry.vector;
         return dbEntry;

@@ -440,7 +440,7 @@ export class Operations {
                         };
                         cursor.continue();
                     } else {
-                        const rankedTopKEntries = sortBy(unrankedTopKEntries);
+                        const rankedTopKEntries = sortBy(unrankedTopKEntries,[1]);
                         console.log(rankedTopKEntries);
                         resolve(rankedTopKEntries);
                     };

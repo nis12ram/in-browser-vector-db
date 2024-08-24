@@ -12,9 +12,11 @@ export function clampToCosineRange(value) {
     return Math.max(Math.min(value, 1), -1);
 };
 
-export function useDotProduct({ vector1, vector2 }) {
-    const normalizedVector1 = useNormalizedVector(vector1);
-    const normalizedVector2 = useNormalizedVector(vector2);
-    const unclampedDotProductResult = normalizedVector1.reduce((accumlator, currentValue, currentIndex) => accumlator + (currentValue * normalizedVector2[currentIndex]), 0);
+export function useDotProduct({ vector1, vector2 }, normlaizeVector = true) {
+    if (normlaizeVector) {
+        vector1 = useNormalizedVector(vector1);
+        vector2 = useNormalizedVector(vector2);
+    };
+    const unclampedDotProductResult = vector1.reduce((accumlator, currentValue, currentIndex) => accumlator + (currentValue * vector2[currentIndex]), 0);
     return clampToCosineRange(unclampedDotProductResult);
 };
