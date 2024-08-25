@@ -84,30 +84,42 @@ export class Connection {
     /**
     * Deletes a db.
     * 
+    * Note: Don’t try to delete the database if any vectorBlock is still open.
+    * 
+    * Before deleting the database, make sure the vectorBlock is closed.
+    * 
     * @param {string} dbName - The name of db.
     * 
-    * @returns {Promise<{dbName: string | null,msgmsg: string,success: boolean}>}  The db will be deleted only,if it is not connected(opened).
+    * @returns {Promise<{msg:string}>} 
+    * 
+    * @example
+    * 
+    * case-1(when vectorBlock is opened)
+    * 
+    * const connection = new Connection();
+    * const dbConnection = await connection.openDb('test');
+    * const vectorBlockConnection = await dbConnection.openVectorBlock('t1');
+    * // first close the open vectorBlock.
+    * console.log(dbConnection.closeVectorBlock());
+    * // then delete the db.
+    * console.log(await connection.deleteDb('test'));
+    * 
+    * case-2(when no vectorBlock is opened)
+    * 
+    * const connection = new Connection();
+    * const dbConnection = await connection.openDb('test');
+    * console.log(await connection.deleteDb('test'));
     */
     async deleteDb(dbName) {
-        if (!dbName || typeof dbName !== 'string') return { dbName: null, msg: 'Invalid dbName specified.', success: false };
+        if (!dbName || typeof dbName !== 'string') throw new ConnectionError('Invalid dbName specified.');
 
         const dbs = await this._getAllDbs();
         const isDbExists = dbs.some(dbObj => dbObj.name === dbName);
-        let dbDeletionResult;
-        try {
-            if (isDbExists) {
-                dbDeletionResult = await new Promise(async (resolve, reject) => {
-                    const dbDeletionRequest = await indexedDB.deleteDatabase(dbName);
-                    dbDeletionRequest.onsuccess = (e) => resolve({ dbName: dbName, msg: 'Db deleted successfully.', success: true });
-                    dbDeletionRequest.onerror = (e) => reject({ dbName: null, msg: `Db deletion failed.\n${e.target.error}`, success: false });
-                });
-            } else {
-                dbDeletionResult = { dbName: dbName, msg: 'Db not exists.', success: false };
-            };
-        } catch (error) {
-            dbDeletionResult = { dbName: null, msg: `Db deletion failed.\n${error}`, success: false };
-        };
-        return dbDeletionResult;
-    }
-
+        if (!isDbExists) throw new ConnectionError('The db deletion failed.No specified db exists.');
+        return new Promise((resolve, reject) => {
+            const dbDeletionRequest = indexedDB.deleteDatabase(dbName);
+            dbDeletionRequest.onsuccess = (e) => resolve({ msg: 'Db deleted successfully.' });
+            dbDeletionRequest.onerror = (e) => reject(new ConnectionError(`Db deletion failed.${e.target.error.message}`));
+        });
+    };
 };

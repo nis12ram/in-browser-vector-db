@@ -69,7 +69,6 @@ function normalizedHammingDistance({ vector1, vector2 }) {
         if (vector1[i] !== vector2[i]) distance += 1;
     };
     return distance / dimension;
-
 };
 
 
