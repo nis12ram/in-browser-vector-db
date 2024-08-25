@@ -131,7 +131,7 @@ export class DbConnection {
 
     /**
     * Deletes a vectorBlock.
-    *     * 
+    *      
     * @param {string} vectorBlockName - The name of vectorBlock.
     * 
     * @returns {Promise<{msg:string}>}  

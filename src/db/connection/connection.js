@@ -84,7 +84,7 @@ export class Connection {
     /**
     * Deletes a db.
     * 
-    * Note: Don’t try to delete the database if any vectorBlock is still open.
+    * Note: Don’t try to delete the database if any vectorBlock is still open,It may cause unexpected issues.
     * 
     * Before deleting the database, make sure the vectorBlock is closed.
     * 
