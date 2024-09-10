@@ -50,3 +50,9 @@ self.addEventListener('message', async (e) => {
 })
 
 
+// #### Opening the vectorblock.
+// ```
+// const vectorBlockConnection = await dbConnection.openVectorBlock("vbTest1");
+
+// ```
+

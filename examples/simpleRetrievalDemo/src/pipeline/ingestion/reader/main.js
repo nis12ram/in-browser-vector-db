@@ -1,9 +1,7 @@
-import { pdfExtraction } from "./pdf/pdfExtraction";
 import { txtExtraction } from "./txt/txtExtraction";
 
 export async function initReader({ fileType, file, data }) {
     let text;
-    if (fileType === 'pdf') text = data;
     if (fileType === 'txt') {
         text = await txtExtraction(file).catch((error) => {
             console.error(error);
