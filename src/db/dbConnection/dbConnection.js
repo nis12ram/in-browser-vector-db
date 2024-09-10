@@ -100,12 +100,12 @@ export class DbConnection {
                     vectorBlock.createIndex('buffer', 'buffer', { unique: false });
                     vectorBlock.createIndex('metadata', 'metadata', { unique: false });
                 } catch (error) {
-                    reject(new OpenVectorBlockError(`VectorBlock creation failed.Note vectorBlock = objectStore.\n${error.message}`));
+                    throw new new OpenVectorBlockError(`VectorBlock creation failed.Note vectorBlock = objectStore.\n${error.message}`);
                 };
             };
             dbOpenRequest.onsuccess = (e) => {
                 const db = e.target.result;
-                if (!isConfigBlockexists) return reject(new ConfigBlockError('ConfigBlock Creation failed.'))
+                if (!isConfigBlockexists) throw new ConfigBlockError('ConfigBlock Creation failed.');
                 if (vectorBlock) {
                     const vectorBlockConnection = new VectorBlockConnection({ dbName: this.dbName, db, vectorBlockName });
                     resolve(Object.assign(vectorBlockConnection, { msg: 'VectorBlock created.' }));
@@ -113,7 +113,7 @@ export class DbConnection {
                     this._db = db;
                 };
             };
-            dbOpenRequest.onerror = (e) => reject(new OpenVectorBlockError(`VectorBlock creation failed.Note vectorBlock = objectStore.${e.target.error.message}`));
+            dbOpenRequest.onerror = (e) => { throw new OpenVectorBlockError(`VectorBlock creation failed.Note vectorBlock = objectStore.${e.target.error.message}`) };
         });
     };
 
@@ -180,9 +180,6 @@ export class DbConnection {
                 };
                 dbOpenRequest.onerror = (e) => reject(new OpenVectorBlockError(`VectorBlock deletion failed.Note vectorBlock = objectStore.${e.target.error.message}`));
             });
-        } else throw new Error('VectorBlock deletion failed.The vectorBlock do not exists.')
-
-
-
+        } else throw new Error('VectorBlock deletion failed.The vectorBlock do not exists.');
     };
 };

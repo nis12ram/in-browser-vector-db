@@ -93,9 +93,9 @@ export class Operations {
     * If the index is already there, it just returns a message like: 'Insert already done at index: _.'
     * If the index is new, it adds the entry and returns a message like: 'Insert done at index: _.'
     * 
-    * @param {number} index - The position where the entry is stored.
-    * @param {string} text - The text content of the entry.
-    * @param {Array} vector - The vector data for the entry.
+    * @param {Number} index - The position where the entry is stored.
+    * @param {String} text - The text content of the entry.
+    * @param {Array<Number?} vector - The vector data for the entry.
     * @param {Object} metadata - Additional information about the entry.
     * @param {Object} internal - Internal arguments.
     * 
@@ -134,9 +134,9 @@ export class Operations {
     * If the index is already there, it just returns a message like: 'Insert already done at index: _.'
     * If the index is new, it adds the entry and returns a message like: 'Insert done at index: _.'
     * 
-    * @param {Array<number>} indices - An array of positions where the entries are stored.
-    * @param {Array<string>} texts - An array of text content for each entry.
-    * @param {Array<Array>} vectors - An array containing the vector data for each entry.
+    * @param {Array<Number>} indices - An array of positions where the entries are stored.
+    * @param {Array<String>} texts - An array of text content for each entry.
+    * @param {Array<Array<Number>} vectors - An array containing the vector data for each entry.
     * @param {Array<Object>} metadataArray - An array of objects containing additional information about each entry.
     * @param {Object} internal - Internal arguments.
     * 
@@ -169,7 +169,7 @@ export class Operations {
     /**
     * Retrieve the readable entry based on the index.
     * 
-    * @param {number} index - the index of the entry.
+    * @param {Number} index - the index of the entry.
     * @param {Object} internal - Internal arguments.
     * 
     * @returns {Promise<{index:number,text:string,vector:Array,metadata:Object}>} - Retrieved readable entry.
@@ -194,7 +194,7 @@ export class Operations {
     /**
     * Retrieve the readable entries based on the indices.
     * 
-    * @param {array} indices - the indices of the entries.
+    * @param {Array} indices - the indices of the entries.
     * @param {Object} internal - Internal arguments.
     * 
     * @returns {Promise<Array<{index:number,text:string,vector:Array,metadata:Object}>>} - Retrieved readable entries.
@@ -218,8 +218,8 @@ export class Operations {
     * 2 if the matchEntries algorithm find nothing to update , it just returns a message like: 'Update operation passed...'.
     * 3 If the index is found and their are something to update, it updates the entry and returns a message like: 'Update is perfomed at index: _'.
     * 
-    * @param {number} index - The index of the entry to be updated. Must be an integer.
-    * @param {string} text - The text content for the entry.
+    * @param {Number} index - The index of the entry to be updated. Must be an integer.
+    * @param {String} text - The text content for the entry.
     * @param {Array} vector - The vector data for the entry.
     * @param {Object} metadata - Additional information about the entry.
     * @param {Object} internal - Internal arguments.
@@ -263,9 +263,9 @@ export class Operations {
     * 2 if the matchEntries algorithm find nothing to update , it just returns a message like: 'Update operation passed...'.
     * 3 If the index is found and their are something to update, it updates the entry and returns a message like: 'Update is perfomed at index: _'.
     * 
-    * @param {Array<number>} indices - An array of positions where the entries are stored.
-    * @param {Array<string>} texts - An array of text content for each entry.
-    * @param {Array<Array>} vectors - An array containing the vector data for each entry.
+    * @param {Array<Number>} indices - An array of positions where the entries are stored.
+    * @param {Array<String>} texts - An array of text content for each entry.
+    * @param {Array<Array<Number>} vectors - An array containing the vector data for each entry.
     * @param {Array<Object>} metadataArray - An array of objects containing additional information about each entry.
     * @param {Object} internal - Internal arguments.
     * 
@@ -388,12 +388,12 @@ export class Operations {
     /**
     * Perfomes semantic search on the vector stored in db uisng queryVector
     * 
-    * @param {Array} queryVector - The vector to query for.
+    * @param {Array<Number>} queryVector - The vector to query for.
     * @param {string} vectorDistance - The algorithm used to compute distance between vectors.
     * @param {number} topK - The top k search result to return.
     * @param {Object} where - The filter conditions based on metadata.
     * 
-    * @returns {Array.<[{},distance]>} The topk result.
+    * @returns {Array<[{},distance]>} The topk result.
     * 
     * @example
     * const serachResult = await search({queryVector:[],topK:5,where:{ bookName: { $ne: 'Book A' }, sentenceReview: { $lte: 50 }, tagName: { $in: 'Tense' } }});

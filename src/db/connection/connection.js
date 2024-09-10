@@ -17,10 +17,9 @@ export class Connection {
     * Can connect with indexedDb or not. 
     */
     _canConnect() {
-        if ('indexedDB' in window) this.connectionAllowed = true;
+        if (indexedDB) this.connectionAllowed = true;
         else this.connectionAllowed = false;
-
-    }
+    };
 
     /** 
     * Get all of the available databases inside indexedDb.
