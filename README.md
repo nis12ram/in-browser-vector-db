@@ -22,8 +22,8 @@ const connection = new Connection();
 const dbConnection = await connection.openDb(dbName);
 const vectorBlockConnection = await dbConnection.openVectorBlock(vectorBlockName);
 await vectorBlockConnection.configureVectorBlock({ vectorDimension: 384, vectorDType: 'float32' });
-const insertmanyResult = await vectorBlockConnection.current.operations.insertMany({ indices: [getUniqueInteger(),getUniqueInteger(),getUniqueInteger()], texts: ["what is earth?","what is web?","what is vector db"], vectors: [[0.01...],[0.01...],[0.01...]], metadataArray: [{name:"test0",age:30,hobby:["dancing"]},{name:"test1",age:40,hobby:["running"]},{name:"test2",age:50,hobby:["cooking"]}] });
-const searchResult = await vectorBlockConnection.current.operations.search({ queryVector: [0.001...], topK: 6, vectorDistance: 'cosine', where:{ name: { $eq: "test1" }, age: { $lte: 50 }, hobby: { $nin: "dancing" } }});
+const insertmanyResult = await vectorBlockConnection.operations.insertMany({ indices: [getUniqueInteger(),getUniqueInteger(),getUniqueInteger()], texts: ["what is earth?","what is web?","what is vector db"], vectors: [[0.01...],[0.01...],[0.01...]], metadataArray: [{name:"test0",age:30,hobby:["dancing"]},{name:"test1",age:40,hobby:["running"]},{name:"test2",age:50,hobby:["cooking"]}] });
+const searchResult = await vectorBlockConnection.operations.search({ queryVector: [0.001...], topK: 6, vectorDistance: 'cosine', where:{ name: { $eq: "test1" }, age: { $lte: 50 }, hobby: { $nin: "dancing" } }});
 ```
 
 #### For bool(uint8) vectors.
@@ -34,8 +34,8 @@ const dbConnection = await connection.openDb(dbName);
 const vectorBlockConnection = await dbConnection.openVectorBlock(vectorBlockName);
 await vectorBlockConnection.configureVectorBlock({ vectorDimension: 384, vectorDType: 'bool' });
 const binaryVectors = convertFloatToBinary([[0.001....],[0.001....],[0.001....]]);
-const insertmanyResult = await vectorBlockConnection.current.operations.insertMany({ indices: [getUniqueInteger(),getUniqueInteger(),getUniqueInteger()], texts: ["what is earth?","what is web?","what is vector db"], vectors: binaryVectors, metadataArray: [{name:"test0",age:30,hobby:["dancing"]},{name:"test1",age:40,hobby:["running"]},{name:"test2",age:50,hobby:["cooking"]}] });
-const searchResult = await vectorBlockConnection.current.operations.search({ queryVector: [0.001...], topK: 6, vectorDistance: 'normHamming', where:{ name: { $eq: "test1" }, age: { $lte: 50 }, hobby: { $nin: "dancing" } }});
+const insertmanyResult = await vectorBlockConnection.operations.insertMany({ indices: [getUniqueInteger(),getUniqueInteger(),getUniqueInteger()], texts: ["what is earth?","what is web?","what is vector db"], vectors: binaryVectors, metadataArray: [{name:"test0",age:30,hobby:["dancing"]},{name:"test1",age:40,hobby:["running"]},{name:"test2",age:50,hobby:["cooking"]}] });
+const searchResult = await vectorBlockConnection.operations.search({ queryVector: [0.001...], topK: 6, vectorDistance: 'normHamming', where:{ name: { $eq: "test1" }, age: { $lte: 50 }, hobby: { $nin: "dancing" } }});
 ```
 
 
