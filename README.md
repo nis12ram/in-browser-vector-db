@@ -2,10 +2,17 @@
 
 ## Features
 
-- Supports Web Worker.
-- Promise based implementation.
 - Supports Binary vector.
+- Promise based implementation.
+- Supports Web Worker.
 
+
+## Installation
+
+```bash
+  npm i in-browser-vector-db
+```
+    
 ## Quick Start
 
 #### For float32(fp32) vectors.
@@ -82,14 +89,14 @@ const insertManyResult = await vectorBlockConnection.operations.insertMany({ ind
 
 #### Update the entry.
 ```
-const updateResult = await vectorBlockConnection.operations.update(0, { text: "what about you?", vector: [0.001...],metadata:{name:"test00"} });
+const updateResult = await vectorBlockConnection.operations.update(index, { text: "what about you?", vector: [0.001...],metadata:{name:"test00"} });
 
 
 ```
 
 #### Update many entries.
 ```
-const updateManyResult = await vectorBlockConnection.operations.updateMany([0,1], { texts: ["what about you?","How are you?"], vectors: [[0.001...],[0.001...]],metadataArray:[{name:"test00"},{name:"test11"}] });
+const updateManyResult = await vectorBlockConnection.operations.updateMany(indices, { texts: ["what about you?","How are you?"], vectors: [[0.001...],[0.001...]],metadataArray:[{name:"test00"},{name:"test11"}] });
 
 
 ```
@@ -102,7 +109,7 @@ const entryAtIndexZero = await vectorBlockConnection.operations.getByIndex(0);
 
 #### Get the entries by ids.
 ```
-const entries = await vectorBlockConnection.operations.getByIndices([0]);
+const entries = await vectorBlockConnection.operations.getByIndices([0,1,2]);
 
 ```
 
@@ -114,7 +121,7 @@ const deleteResult = await vectorBlockConnection.operations.deleteByIndex(0);
 
 #### Delete the entries by ids.
 ```
-const deleteResults = await vectorBlockConnection.operations.deleteByIndices([0]);
+const deleteResults = await vectorBlockConnection.operations.deleteByIndices([0,1,2]);
 
 ```
 
