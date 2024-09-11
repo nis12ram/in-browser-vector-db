@@ -38,11 +38,11 @@ const insertmanyResult = await vectorBlockConnection.operations.insertMany({ ind
 const searchResult = await vectorBlockConnection.operations.search({ queryVector: [0.001...], topK: 6, vectorDistance: 'normHamming', where:{ name: { $eq: "test1" }, age: { $lte: 50 }, hobby: { $nin: "dancing" } }});
 ```
 > [!IMPORTANT]  
-> The configuration process of vectorblock is a one time process and the applied configurtaion cannot be modified.<br>
-> The inserted vector should be same of same data type and dimension as specified in the vectorblock configuration(configureVectorBlock()).<br>
-> Available dTypes ('float32' -> fp32 ,'bool' -> uint8).<br>
-> Available vector distance ('cosine','l2','hamming','normHamming').<br>
-> Available filter ('$eq','$ne','$gt','$lt','$gte','$lte','$in','$nin').<br>
+> The configuration process of vectorblock is a one time process and the applied configurtaion cannot be modified.<br><br>
+> The inserted vector should be same of same data type and dimension as specified in the vectorblock configuration(configureVectorBlock()).<br><br>
+> Available dTypes ('float32' -> fp32 ,'bool' -> uint8).<br><br>
+> Available vector distance ('cosine','l2','hamming','normHamming').<br><br>
+> Available filter ('$eq','$ne','$gt','$lt','$gte','$lte','$in','$nin').<br><br>
 
 
 
