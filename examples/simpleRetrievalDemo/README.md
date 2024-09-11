@@ -1,8 +1,6 @@
-# React + Vite
+## simpleRetreivalDemo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> [!NOTE]  
+> All ingestion and retrieval code is inside src/pipeline.
+> For chunking regexBaseSplitter is used ,chunk embeddings are computed using nomic-ai/nomic-embed-text-v1.5 ,strategy used for chunk embedding is late chunking(https://jina.ai/news/late-chunking-in-long-context-embedding-models/)
+> Entire ingestion and retrieval is handled using web worker src/worker.js
