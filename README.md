@@ -37,7 +37,7 @@ const binaryVectors = convertFloatToBinary([[0.001....],[0.001....],[0.001....]]
 const insertmanyResult = await vectorBlockConnection.operations.insertMany({ indices: [getUniqueInteger(),getUniqueInteger(),getUniqueInteger()], texts: ["what is earth?","what is web?","what is vector db"], vectors: binaryVectors, metadataArray: [{name:"test0",age:30,hobby:["dancing"]},{name:"test1",age:40,hobby:["running"]},{name:"test2",age:50,hobby:["cooking"]}] });
 const searchResult = await vectorBlockConnection.operations.search({ queryVector: [0.001...], topK: 6, vectorDistance: 'normHamming', where:{ name: { $eq: "test1" }, age: { $lte: 50 }, hobby: { $nin: "dancing" } }});
 ```
-[!NOTE] 
+>[!NOTE] 
 * The configuration process of vectorblock is a one time process and the applied configurtaion cannot be modified.
 * The inserted vector should be same of same data type and dimension as specified in the vectorblock configuration(configureVectorBlock()).
 * Available dTypes ('float32' -> fp32 ,'bool' -> uint8).
