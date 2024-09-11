@@ -39,10 +39,10 @@ const searchResult = await vectorBlockConnection.operations.search({ queryVector
 ```
 > [!IMPORTANT]  
 > * The configuration process of vectorblock is a one time process and the applied configurtaion cannot be modified.
- * The inserted vector should be same of same data type and dimension as specified in the vectorblock configuration(configureVectorBlock()).
- * Available dTypes ('float32' -> fp32 ,'bool' -> uint8).
-* Available vector distance ('cosine','l2','hamming','normHamming').
-* Available filter ('$eq','$ne','$gt','$lt','$gte','$lte','$in','$nin').
+> * The inserted vector should be same of same data type and dimension as specified in the vectorblock configuration(configureVectorBlock()).
+> * Available dTypes ('float32' -> fp32 ,'bool' -> uint8).
+> * Available vector distance ('cosine','l2','hamming','normHamming').
+> * Available filter ('$eq','$ne','$gt','$lt','$gte','$lte','$in','$nin').
 
 
 
