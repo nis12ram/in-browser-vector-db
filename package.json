@@ -1,6 +1,6 @@
 {
   "name": "in-browser-vector-db",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "https://github.com/nis12ram/in-browser-vector-db.git",
   "main": "./src/index.js",
   "type": "module",

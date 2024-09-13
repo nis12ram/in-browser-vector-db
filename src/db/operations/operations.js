@@ -435,13 +435,10 @@ export class Operations {
                                 };
                                 return i;
                             });
-                            console.log(distance);
-                            console.log(unrankedTopKEntries);
                         };
                         cursor.continue();
                     } else {
                         const rankedTopKEntries = sortBy(unrankedTopKEntries, [1]);
-                        console.log(rankedTopKEntries);
                         resolve(rankedTopKEntries);
                     };
                 } catch (error) {
